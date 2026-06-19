@@ -3,27 +3,30 @@
 document.addEventListener('click', (e) => {
   const spider = document.querySelector('.spider');
   const wall = document.querySelector('.wall');
-  const wallRect = wall.getBoundingClientRect();
   const spiderRect = spider.getBoundingClientRect();
+  const wallRect = wall.getBoundingClientRect();
 
-  const x = e.clientX - wallRect.left;
-  const y = e.clientY - wallRect.top;
-
-  if (x < 0 || y < 0 || x > wallRect.width || y > wallRect.height) {
+  if (
+    e.clientX < wallRect.left ||
+    e.clientX > wallRect.right ||
+    e.clientY < wallRect.top ||
+    e.clientY > wallRect.bottom
+  ) {
     return;
   }
 
-  let newTop =
-    e.clientY - wallRect.top - wall.clientTop - spiderRect.height / 2;
-  let newLeft =
-    e.clientX - wallRect.left - wall.clientLeft - spiderRect.width / 2;
+  const x = e.clientX - wallRect.left - wall.clientLeft;
+  const y = e.clientY - wallRect.top - wall.clientTop;
 
-  const maxTop = wall.clientHeight - spider.clientHeight;
-  const maxLeft = wall.clientWidth - spider.clientWidth;
+  const minLeft = x - spiderRect.width / 2;
+  const minTop = y - spiderRect.height / 2;
 
-  newTop = Math.max(0, Math.min(newTop, maxTop));
-  newLeft = Math.max(0, Math.min(newLeft, maxLeft));
+  const maxLeft = wall.clientWidth - spider.offsetWidth;
+  const maxTop = wall.clientHeight - spider.offsetHeight;
 
-  spider.style.top = `${newTop}px`;
+  const newLeft = Math.max(0, Math.min(minLeft, maxLeft));
+  const newTop = Math.max(0, Math.min(minTop, maxTop));
+
   spider.style.left = `${newLeft}px`;
+  spider.style.top = `${newTop}px`;
 });
